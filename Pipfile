@@ -11,6 +11,8 @@ djangorestframework = "==3.12.4"
 black = "*"
 flake8 = "*"
 isort = "*"
+pynvim = "*"
+django-stubs = "*"
 
 [requires]
 python_version = "3.10"
