@@ -2,14 +2,14 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import CustomUserChangeForm, CustomUserCreationForm
-from .models import CustomUser, Comment, Issue
+from .models import CustomUser, Comment, Issue, Project, Contributor
 
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    readonly_fields = ("user_id",)
+    readonly_fields = ("id",)
     list_display = (
         "email",
         "first_name",
@@ -25,7 +25,7 @@ class CustomUserAdmin(UserAdmin):
         "is_active",
     )
     fieldsets = (
-        (None, {"fields": ("user_id", "email", "password", "first_name", "last_name")}),
+        (None, {"fields": ("id", "email", "password", "first_name", "last_name")}),
         ("Permissions", {"fields": ("is_staff", "is_active")}),
     )
     add_fieldsets = (
@@ -52,3 +52,5 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Comment)
 admin.site.register(Issue)
+admin.site.register(Project)
+admin.site.register(Contributor)

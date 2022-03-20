@@ -9,7 +9,7 @@ class Comment(models.Model):
     Comments
     """
 
-    comment_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     description = models.CharField(max_length=256)
     created_time = models.DateTimeField(auto_now_add=True)
 
