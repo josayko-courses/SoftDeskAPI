@@ -9,8 +9,12 @@ class Contributor(models.Model):
     users and projects
     """
 
-    user = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE)
-    project = models.ForeignKey(to=Project, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        to=CustomUser, on_delete=models.CASCADE, related_name="contributions"
+    )
+    project = models.ForeignKey(
+        to=Project, on_delete=models.CASCADE, related_name="users"
+    )
 
     class Permission(models.TextChoices):
         RDONLY = "RDONLY", "Read-only"

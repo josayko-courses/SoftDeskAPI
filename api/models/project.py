@@ -14,7 +14,5 @@ class Project(models.Model):
     type = models.CharField(max_length=64)
     created_time = models.DateTimeField(auto_now_add=True)
 
-    users = models.ManyToManyField(CustomUser, through="Contributor")
-
     def __str__(self):
         return self.title
