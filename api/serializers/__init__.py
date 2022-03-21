@@ -1,2 +1,3 @@
 from .user_serializer import UserSerializer
 from .project_serializer import ProjectSerializer
+from .contributor_serializer import ContributorSerializer
