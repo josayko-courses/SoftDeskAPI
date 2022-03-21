@@ -5,6 +5,14 @@ from api.serializers import ProjectListSerializer, ProjectDetailSerializer
 
 
 class ProjectsViewset(ModelViewSet):
+    """
+    3 - GET /projects/
+    4 - POST /projects/
+    5 - GET /projects/{id}/
+    6 - PUT /projects/{id}/
+    7 - DELETE /projects/{id}/
+    """
+
     serializer_class = ProjectListSerializer
     detail_serializer_class = ProjectDetailSerializer
 
