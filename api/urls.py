@@ -3,11 +3,12 @@ from django.urls import include, path
 from rest_framework import routers
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from api.views import UserViewset, api
+from api.views import UsersViewset, ProjectsViewset, api
 
 router = routers.SimpleRouter()
 
-router.register("user", UserViewset, basename="user")
+router.register("users", UsersViewset, basename="users")
+router.register("projects", ProjectsViewset, basename="projects")
 
 urlpatterns = [
     path("", api, name="api"),
