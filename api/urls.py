@@ -3,7 +3,7 @@ from django.urls import include, path
 from rest_framework import routers
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from api.views import UsersViewset, ProjectsViewset, ContributorsViewset
+from api.views import UsersViewset, ProjectsViewset, ContributorsViewset, IssuesViewset
 
 urlpatterns = [
     # 3 - GET /projects/
@@ -31,6 +31,18 @@ urlpatterns = [
     path(
         "projects/<project_id>/users/<user_id>/",
         ContributorsViewset.as_view({"delete": "destroy"}),
+    ),
+    # 11 - GET /projects/{id}/issues/
+    # 12 - POST /projects/{id}/issues/
+    path(
+        "projects/<project_id>/issues/",
+        IssuesViewset.as_view({"get": "list", "post": "create"}),
+    ),
+    # 13 - PUT /projects/{id}/issues/{id}/
+    # 14 - DELETE /projects/{id}/issues/{id}/
+    path(
+        "projects/<project_id>/issues/<issue_id>/",
+        IssuesViewset.as_view({"put": "update", "delete": "destroy"}),
     ),
 ]
 

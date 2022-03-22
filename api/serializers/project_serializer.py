@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 
-from api.models import Project, Contributor
-from .contributor_serializer import ContributorSerializer
+from api.models import Project
+from .contributor_serializer import ContributorDetailSerializer
 
 
 class ProjectListSerializer(ModelSerializer):
@@ -11,7 +11,7 @@ class ProjectListSerializer(ModelSerializer):
 
 
 class ProjectDetailSerializer(ModelSerializer):
-    users = ContributorSerializer(many=True)
+    users = ContributorDetailSerializer(many=True)
 
     class Meta:
         model = Project
