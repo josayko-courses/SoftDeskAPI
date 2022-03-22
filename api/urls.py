@@ -27,9 +27,9 @@ urlpatterns = [
         "projects/<project_id>/users/",
         ContributorsViewset.as_view({"get": "list", "post": "create"}),
     ),
-    # 10 - DELETE /projects/{id}/users/
+    # 10 - DELETE /projects/{id}/users/{id}/
     path(
-        "projects/<project_id>/users/<user_id>",
+        "projects/<project_id>/users/<user_id>/",
         ContributorsViewset.as_view({"delete": "destroy"}),
     ),
 ]
