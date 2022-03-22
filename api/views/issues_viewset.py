@@ -4,6 +4,7 @@ from rest_framework import status
 
 from api.models import Issue, Project, CustomUser
 from api.serializers import IssueSerializer
+from django.core.exceptions import ValidationError
 
 
 class IssuesViewset(ModelViewSet):
@@ -48,8 +49,11 @@ class IssuesViewset(ModelViewSet):
 
     # 14 - DELETE /projects/{id}/issues/{id}/
     def destroy(self, request, *args, **kwargs):
-        project = Project.objects.get(id=kwargs["project_id"])
-        user = CustomUser.objects.get(id=kwargs["user_id"])
-        issue = Issue.objects.filter(project=project, user=user)
-        self.perform_destroy(issue)
+        try:
+            issue = Issue.objects.get(id=kwargs["issue_id"])
+            self.perform_destroy(issue)
+        except ValidationError:
+            return Response({"errors": "Invalid UUID"}, status.HTTP_400_BAD_REQUEST)
+        except Issue.DoesNotExist:
+            return Response({"errors": "Not Found"}, status.HTTP_404_NOT_FOUND)
         return Response(status=status.HTTP_204_NO_CONTENT)

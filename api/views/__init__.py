@@ -3,3 +3,4 @@ from .users_viewset import UsersViewset
 from .projects_viewset import ProjectsViewset
 from .contributors_viewset import ContributorsViewset
 from .issues_viewset import IssuesViewset
+from .comments_viewset import CommentsViewset

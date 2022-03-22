@@ -6,9 +6,6 @@ from .issue_serializer import IssueSerializer
 
 
 class CommentSerializer(ModelSerializer):
-    author = UserListSerializer(many=True)
-    issue = IssueSerializer(many=True)
-
     class Meta:
         model = Comment
         fields = ["id", "description", "created_time", "author", "issue"]
