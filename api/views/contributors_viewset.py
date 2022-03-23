@@ -1,10 +1,11 @@
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
-from rest_framework import status
-
-from api.models import Contributor, Project, CustomUser
-from api.serializers import ContributorListSerializer
 from django.core.exceptions import ValidationError
+
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+
+from api.models import Contributor, CustomUser, Project
+from api.serializers import ContributorListSerializer
 
 
 class ContributorsViewset(ModelViewSet):
@@ -55,7 +56,7 @@ class ContributorsViewset(ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         try:
             project = Project.objects.get(id=kwargs["project_id"])
-        except:
+        except ValueError:
             return Response(
                 {
                     "detail": f"{kwargs['project_id']} is an invalid project id (expected a number)"

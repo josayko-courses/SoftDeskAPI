@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
 from api.models import Project
-from api.serializers import ProjectListSerializer, ProjectDetailSerializer
+from api.serializers import ProjectDetailSerializer, ProjectListSerializer
 
 
 class ProjectsViewset(ModelViewSet):

@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueTogetherValidator
 
 from api.models import Contributor
+
 from .user_serializer import UserDetailSerializer
 
 

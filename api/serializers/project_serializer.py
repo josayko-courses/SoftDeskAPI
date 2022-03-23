@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 
 from api.models import Project
+
 from .contributor_serializer import ContributorDetailSerializer
 
 

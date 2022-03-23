@@ -1,9 +1,11 @@
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
-from rest_framework import status
-from api.serializers import CommentSerializer
-from api.models import Comment, Issue, CustomUser
 from django.core.exceptions import ValidationError
+
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+
+from api.models import Comment, CustomUser, Issue
+from api.serializers import CommentSerializer
 
 
 class CommentsViewset(ModelViewSet):

@@ -1,10 +1,11 @@
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
-from rest_framework import status
-
-from api.models import Issue, Project, CustomUser
-from api.serializers import IssueSerializer
 from django.core.exceptions import ValidationError
+
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+
+from api.models import CustomUser, Issue, Project
+from api.serializers import IssueSerializer
 
 
 class IssuesViewset(ModelViewSet):
@@ -57,7 +58,7 @@ class IssuesViewset(ModelViewSet):
     def update(self, request, *args, **kwargs):
         try:
             issue = Issue.objects.get(id=kwargs["issue_id"])
-        except:
+        except ValidationError:
             return Response(
                 {"detail": f"{kwargs['issue_id']} is an invalid issue UUID"},
                 status.HTTP_400_BAD_REQUEST,
