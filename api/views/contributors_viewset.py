@@ -33,6 +33,10 @@ class ContributorsViewset(ModelViewSet):
     def create(self, request, *args, **kwargs):
         try:
             project = Project.objects.get(id=kwargs["project_id"])
+        except Project.DoesNotExist:
+            return Response(
+                {"detail": "Project does not exists"}, status.HTTP_404_NOT_FOUND
+            )
         except ValueError:
             return Response(
                 {"detail": "Invalid id (not a number)"}, status.HTTP_400_BAD_REQUEST

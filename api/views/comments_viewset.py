@@ -23,31 +23,33 @@ class CommentsViewset(ModelViewSet):
     # 16 - GET /projects/{id}/issues/{id}/comments/
     def list(self, request, *args, **kwargs):
         try:
-            comments = Comment.objects.filter(issue=kwargs["issue_id"])
+            comments = Comment.objects.filter(issue=kwargs["issue_id"]).filter(
+                issue__project__id=kwargs["project_id"]
+            )
         except ValueError:
             return Response(
-                {
-                    "detail": f"{kwargs['issue_id']} is an invalid issue id (expected a number)"
-                },
-                status.HTTP_400_BAD_REQUEST,
+                {"detail": "Invalid id (not a number)"}, status.HTTP_400_BAD_REQUEST
             )
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
     # 15 - POST /projects/{id}/issues/{id}/comments/
     def create(self, request, *args, **kwargs):
+        try:
+            issue = Issue.objects.filter(project=kwargs["project_id"]).get(
+                id=kwargs["issue_id"]
+            )
+        except Issue.DoesNotExist:
+            return Response(
+                {"detail": "Project does not exists"}, status.HTTP_404_NOT_FOUND
+            )
+        except ValueError:
+            return Response(
+                {"detail": "Invalid id (not a number)"}, status.HTTP_400_BAD_REQUEST
+            )
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
-            try:
-                issue = Issue.objects.get(id=kwargs["issue_id"])
-                author = CustomUser.objects.get(id=request.data["author"])
-            except ValueError:
-                return Response(
-                    {
-                        "detail": f"{kwargs['issue_id']} is an invalid issue id (expected a number)"
-                    },
-                    status.HTTP_400_BAD_REQUEST,
-                )
+            author = CustomUser.objects.get(id=request.data["author"])
             serializer.save(issue=issue, author=author)
             return Response(serializer.data, status.HTTP_201_CREATED)
         else:
@@ -56,17 +58,23 @@ class CommentsViewset(ModelViewSet):
     # 17 - PUT /projects/{id}/issues/{id}/comments/{id}/
     def update(self, request, *args, **kwargs):
         try:
-            comment = Comment.objects.get(id=kwargs["comment_id"])
+            comment = (
+                Comment.objects.filter(issue=kwargs["issue_id"])
+                .filter(issue__project__id=kwargs["project_id"])
+                .get(id=kwargs["comment_id"])
+            )
+        except Comment.DoesNotExist:
+            return Response(
+                {"detail": "Comment does not exists"}, status.HTTP_404_NOT_FOUND
+            )
         except ValueError:
             return Response(
-                {
-                    "detail": f"{kwargs['comment_id']} is an invalid comment id (expected a number)"
-                },
-                status.HTTP_400_BAD_REQUEST,
+                {"detail": "Invalid id (not a number)"}, status.HTTP_400_BAD_REQUEST
             )
         serializer = CommentSerializer(comment, data=request.data, partial=True)
         if serializer.is_valid():
-            serializer.save()
+            issue = Issue.objects.get(id=kwargs["issue_id"])
+            serializer.save(issue=issue)
             return Response(serializer.data, status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
@@ -74,31 +82,38 @@ class CommentsViewset(ModelViewSet):
     # 18 - DELETE /projects/{id}/issues/{id}/comments/{id}/
     def destroy(self, request, *args, **kwargs):
         try:
-            comment = Comment.objects.get(id=kwargs["comment_id"])
-            self.perform_destroy(comment)
-        except ValueError:
-            return Response(
-                {
-                    "detail": f"{kwargs['comment_id']} is an invalid comment id (expected a number)"
-                },
-                status.HTTP_400_BAD_REQUEST,
+            comment = (
+                Comment.objects.filter(issue=kwargs["issue_id"])
+                .filter(issue__project__id=kwargs["project_id"])
+                .get(id=kwargs["comment_id"])
             )
         except Comment.DoesNotExist:
-            return Response({"detail": "comment not found"}, status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Comment does not exists"}, status.HTTP_404_NOT_FOUND
+            )
+        except ValueError:
+            return Response(
+                {"detail": "Invalid id (not a number)"}, status.HTTP_400_BAD_REQUEST
+            )
+
+        self.perform_destroy(comment)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     # 19 - GET /projects/{id}/issues/{id}/comments/{id}/
     def retrieve(self, request, *args, **kwargs):
         try:
-            comment = Comment.objects.get(id=kwargs["comment_id"])
-        except ValueError:
-            return Response(
-                {
-                    "detail": f"{kwargs['comment_id']} is an invalid comment id (expected a number)"
-                },
-                status.HTTP_400_BAD_REQUEST,
+            comment = (
+                Comment.objects.filter(issue=kwargs["issue_id"])
+                .filter(issue__project__id=kwargs["project_id"])
+                .get(id=kwargs["comment_id"])
             )
         except Comment.DoesNotExist:
-            return Response({"detail": "comment not found"}, status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Comment does not exists"}, status.HTTP_404_NOT_FOUND
+            )
+        except ValueError:
+            return Response(
+                {"detail": "Invalid id (not a number)"}, status.HTTP_400_BAD_REQUEST
+            )
         serializer = CommentSerializer(comment)
         return Response(serializer.data, status.HTTP_200_OK)
