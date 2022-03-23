@@ -10,6 +10,7 @@ class Contributor(models.Model):
     users and projects
     """
 
+    id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(
         to=CustomUser, on_delete=models.CASCADE, related_name="contributions"
     )
@@ -18,13 +19,19 @@ class Contributor(models.Model):
     )
 
     class Permission(models.TextChoices):
-        RDONLY = "RDONLY", "Read-only"
-        RDWR = "RDWR", "Read and write"
+        ROOT = "Root"
+        GROUP = "Group"
+        USER = "User"
 
     permission = models.CharField(
-        max_length=6, choices=Permission.choices, default=Permission.RDONLY
+        max_length=64, choices=Permission.choices, default=Permission.USER
     )
-    role = models.CharField(max_length=64)
+
+    class Role(models.TextChoices):
+        AUTHOR = "Author"
+        CONTRIB = "Contributor"
+
+    role = models.CharField(max_length=64, choices=Role.choices, default=Role.CONTRIB)
 
     class Meta:
         unique_together = (

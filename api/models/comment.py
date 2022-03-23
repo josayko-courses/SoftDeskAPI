@@ -1,5 +1,3 @@
-import uuid
-
 from django.db import models
 
 from .custom_user import CustomUser
@@ -11,7 +9,7 @@ class Comment(models.Model):
     Comments
     """
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.BigAutoField(primary_key=True)
     description = models.CharField(max_length=256)
     created_time = models.DateTimeField(auto_now_add=True)
 

@@ -1,5 +1,3 @@
-from django.core.exceptions import ValidationError
-
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -26,9 +24,11 @@ class CommentsViewset(ModelViewSet):
     def list(self, request, *args, **kwargs):
         try:
             comments = Comment.objects.filter(issue=kwargs["issue_id"])
-        except ValidationError:
+        except ValueError:
             return Response(
-                {"detail": f"{kwargs['issue_id']} is an invalid issue UUID"},
+                {
+                    "detail": f"{kwargs['issue_id']} is an invalid issue id (expected a number)"
+                },
                 status.HTTP_400_BAD_REQUEST,
             )
         serializer = CommentSerializer(comments, many=True)
@@ -41,9 +41,11 @@ class CommentsViewset(ModelViewSet):
             try:
                 issue = Issue.objects.get(id=kwargs["issue_id"])
                 author = CustomUser.objects.get(id=request.data["author"])
-            except ValidationError:
+            except ValueError:
                 return Response(
-                    {"detail": f"{kwargs['issue_id']} is an invalid issue UUID"},
+                    {
+                        "detail": f"{kwargs['issue_id']} is an invalid issue id (expected a number)"
+                    },
                     status.HTTP_400_BAD_REQUEST,
                 )
             serializer.save(issue=issue, author=author)
@@ -55,9 +57,11 @@ class CommentsViewset(ModelViewSet):
     def update(self, request, *args, **kwargs):
         try:
             comment = Comment.objects.get(id=kwargs["comment_id"])
-        except ValidationError:
+        except ValueError:
             return Response(
-                {"detail": f"{kwargs['comment_id']} is an invalid comment UUID"},
+                {
+                    "detail": f"{kwargs['comment_id']} is an invalid comment id (expected a number)"
+                },
                 status.HTTP_400_BAD_REQUEST,
             )
         serializer = CommentSerializer(comment, data=request.data, partial=True)
@@ -72,9 +76,11 @@ class CommentsViewset(ModelViewSet):
         try:
             comment = Comment.objects.get(id=kwargs["comment_id"])
             self.perform_destroy(comment)
-        except ValidationError:
+        except ValueError:
             return Response(
-                {"detail": f"{kwargs['comment_id']} is an invalid comment UUID"},
+                {
+                    "detail": f"{kwargs['comment_id']} is an invalid comment id (expected a number)"
+                },
                 status.HTTP_400_BAD_REQUEST,
             )
         except Comment.DoesNotExist:
@@ -85,9 +91,11 @@ class CommentsViewset(ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         try:
             comment = Comment.objects.get(id=kwargs["comment_id"])
-        except ValidationError:
+        except ValueError:
             return Response(
-                {"detail": f"{kwargs['comment_id']} is an invalid comment UUID"},
+                {
+                    "detail": f"{kwargs['comment_id']} is an invalid comment id (expected a number)"
+                },
                 status.HTTP_400_BAD_REQUEST,
             )
         except Comment.DoesNotExist:

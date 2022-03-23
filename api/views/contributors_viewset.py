@@ -1,5 +1,3 @@
-from django.core.exceptions import ValidationError
-
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -12,6 +10,7 @@ class ContributorsViewset(ModelViewSet):
     """
     8 - POST /projects/{id}/users/
     9 - GET /projects/{id}/users/
+    10 - DELETE /projects/{id}/users/{id}/
     """
 
     serializer_class = ContributorListSerializer
@@ -25,27 +24,21 @@ class ContributorsViewset(ModelViewSet):
             contributors = Contributor.objects.filter(project=kwargs["project_id"])
         except ValueError:
             return Response(
-                {
-                    "detail": f"{kwargs['project_id']} is an invalid project id (expected a number)"
-                },
-                status.HTTP_400_BAD_REQUEST,
+                {"detail": "Invalid id (not a number)"}, status.HTTP_400_BAD_REQUEST
             )
         serializer = ContributorListSerializer(contributors, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
     # 8 - POST /projects/{id}/users/
     def create(self, request, *args, **kwargs):
+        try:
+            project = Project.objects.get(id=kwargs["project_id"])
+        except ValueError:
+            return Response(
+                {"detail": "Invalid id (not a number)"}, status.HTTP_400_BAD_REQUEST
+            )
         serializer = ContributorListSerializer(data=request.data)
         if serializer.is_valid():
-            try:
-                project = Project.objects.get(id=kwargs["project_id"])
-            except ValueError:
-                return Response(
-                    {
-                        "detail": f"{kwargs['project_id']} is an invalid project id (expected a number)"
-                    },
-                    status.HTTP_400_BAD_REQUEST,
-                )
             user = CustomUser.objects.get(id=request.data["user"])
             serializer.save(project=project, user=user)
             return Response(serializer.data, status.HTTP_201_CREATED)
@@ -55,21 +48,16 @@ class ContributorsViewset(ModelViewSet):
     # 10 - DELETE /projects/{id}/users/{id}/
     def destroy(self, request, *args, **kwargs):
         try:
-            project = Project.objects.get(id=kwargs["project_id"])
+            contributor = Contributor.objects.filter(project=kwargs["project_id"]).get(
+                user=kwargs["user_id"]
+            )
+        except Contributor.DoesNotExist:
+            return Response(
+                {"detail": "Contributor does not exists"}, status.HTTP_404_NOT_FOUND
+            )
         except ValueError:
             return Response(
-                {
-                    "detail": f"{kwargs['project_id']} is an invalid project id (expected a number)"
-                },
-                status.HTTP_400_BAD_REQUEST,
+                {"detail": "Invalid id (not a number)"}, status.HTTP_400_BAD_REQUEST
             )
-        try:
-            user = CustomUser.objects.get(id=kwargs["user_id"])
-        except ValidationError:
-            return Response(
-                {"detail": f"{kwargs['user_id']} is an invalid user UUID"},
-                status.HTTP_400_BAD_REQUEST,
-            )
-        contributor = Contributor.objects.filter(project=project, user=user)
         self.perform_destroy(contributor)
         return Response(status=status.HTTP_204_NO_CONTENT)

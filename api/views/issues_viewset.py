@@ -1,5 +1,3 @@
-from django.core.exceptions import ValidationError
-
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -58,9 +56,11 @@ class IssuesViewset(ModelViewSet):
     def update(self, request, *args, **kwargs):
         try:
             issue = Issue.objects.get(id=kwargs["issue_id"])
-        except ValidationError:
+        except ValueError:
             return Response(
-                {"detail": f"{kwargs['issue_id']} is an invalid issue UUID"},
+                {
+                    "detail": f"{kwargs['issue_id']} is an invalid issue id (expected a number)"
+                },
                 status.HTTP_400_BAD_REQUEST,
             )
         serializer = IssueSerializer(issue, data=request.data, partial=True)
@@ -75,9 +75,11 @@ class IssuesViewset(ModelViewSet):
         try:
             issue = Issue.objects.get(id=kwargs["issue_id"])
             self.perform_destroy(issue)
-        except ValidationError:
+        except ValueError:
             return Response(
-                {"detail": f"{kwargs['issue_id']} is an invalid issue UUID"},
+                {
+                    "detail": f"{kwargs['issue_id']} is an invalid issue id (expected a number)"
+                },
                 status.HTTP_400_BAD_REQUEST,
             )
         except Issue.DoesNotExist:

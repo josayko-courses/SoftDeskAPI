@@ -1,5 +1,3 @@
-import uuid
-
 from django.db import models
 
 from .custom_user import CustomUser
@@ -11,12 +9,34 @@ class Issue(models.Model):
     Issues
     """
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.BigAutoField(primary_key=True)
     title = models.CharField(max_length=128)
     description = models.CharField(max_length=256)
-    tag = models.CharField(max_length=64)
-    priority = models.CharField(max_length=64)
-    status = models.CharField(max_length=64)
+
+    class Tag(models.TextChoices):
+        BUG = "Bug"
+        IMPROVE = "Improvement"
+        TASK = "Task"
+
+    tag = models.CharField(max_length=64, choices=Tag.choices, default=Tag.TASK)
+
+    class Priority(models.TextChoices):
+        LOW = "Low"
+        MEDIUM = "Medium"
+        HIGH = "High"
+
+    priority = models.CharField(
+        max_length=64, choices=Priority.choices, default=Priority.MEDIUM
+    )
+
+    class Status(models.TextChoices):
+        TODO = "To do"
+        ONGOING = "Ongoing"
+        DONE = "Done"
+
+    status = models.CharField(
+        max_length=64, choices=Status.choices, default=Status.TODO
+    )
     created_time = models.DateTimeField(auto_now_add=True)
 
     # Relations
