@@ -22,7 +22,15 @@ class IssuesViewset(ModelViewSet):
 
     # 11 - GET /projects/{id}/issues/
     def list(self, request, *args, **kwargs):
-        issues = Issue.objects.filter(project=kwargs["project_id"])
+        try:
+            issues = Issue.objects.filter(project=kwargs["project_id"])
+        except ValueError:
+            return Response(
+                {
+                    "detail": f"{kwargs['project_id']} is an invalid project id (expected a number)"
+                },
+                status.HTTP_400_BAD_REQUEST,
+            )
         serializer = IssueSerializer(issues, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
@@ -30,7 +38,15 @@ class IssuesViewset(ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = IssueSerializer(data=request.data)
         if serializer.is_valid():
-            project = Project.objects.get(id=kwargs["project_id"])
+            try:
+                project = Project.objects.get(id=kwargs["project_id"])
+            except ValueError:
+                return Response(
+                    {
+                        "detail": f"{kwargs['project_id']} is an invalid project id (expected a number)"
+                    },
+                    status.HTTP_400_BAD_REQUEST,
+                )
             author = CustomUser.objects.get(id=request.data["author"])
             serializer.save(project=project, author=author)
             return Response(serializer.data, status.HTTP_201_CREATED)
@@ -39,7 +55,13 @@ class IssuesViewset(ModelViewSet):
 
     # 13 - PUT /projects/{id}/issues/{id}/
     def update(self, request, *args, **kwargs):
-        issue = Issue.objects.get(id=kwargs["issue_id"])
+        try:
+            issue = Issue.objects.get(id=kwargs["issue_id"])
+        except:
+            return Response(
+                {"detail": f"{kwargs['issue_id']} is an invalid issue UUID"},
+                status.HTTP_400_BAD_REQUEST,
+            )
         serializer = IssueSerializer(issue, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -53,7 +75,10 @@ class IssuesViewset(ModelViewSet):
             issue = Issue.objects.get(id=kwargs["issue_id"])
             self.perform_destroy(issue)
         except ValidationError:
-            return Response({"errors": "Invalid UUID"}, status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": f"{kwargs['issue_id']} is an invalid issue UUID"},
+                status.HTTP_400_BAD_REQUEST,
+            )
         except Issue.DoesNotExist:
             return Response({"errors": "Not Found"}, status.HTTP_404_NOT_FOUND)
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -25,7 +25,10 @@ class CommentsViewset(ModelViewSet):
         try:
             comments = Comment.objects.filter(issue=kwargs["issue_id"])
         except ValidationError:
-            return Response({"errors": "Invalid UUID"}, status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": f"{kwargs['issue_id']} is an invalid issue UUID"},
+                status.HTTP_400_BAD_REQUEST,
+            )
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
@@ -37,7 +40,10 @@ class CommentsViewset(ModelViewSet):
                 issue = Issue.objects.get(id=kwargs["issue_id"])
                 author = CustomUser.objects.get(id=request.data["author"])
             except ValidationError:
-                return Response({"errors": "Invalid UUID"}, status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"detail": f"{kwargs['issue_id']} is an invalid issue UUID"},
+                    status.HTTP_400_BAD_REQUEST,
+                )
             serializer.save(issue=issue, author=author)
             return Response(serializer.data, status.HTTP_201_CREATED)
         else:
@@ -48,7 +54,10 @@ class CommentsViewset(ModelViewSet):
         try:
             comment = Comment.objects.get(id=kwargs["comment_id"])
         except ValidationError:
-            return Response({"errors": "Invalid UUID"}, status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": f"{kwargs['comment_id']} is an invalid comment UUID"},
+                status.HTTP_400_BAD_REQUEST,
+            )
         serializer = CommentSerializer(comment, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -62,9 +71,12 @@ class CommentsViewset(ModelViewSet):
             comment = Comment.objects.get(id=kwargs["comment_id"])
             self.perform_destroy(comment)
         except ValidationError:
-            return Response({"errors": "Invalid UUID"}, status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": f"{kwargs['comment_id']} is an invalid comment UUID"},
+                status.HTTP_400_BAD_REQUEST,
+            )
         except Comment.DoesNotExist:
-            return Response({"errors": "Not Found"}, status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "comment not found"}, status.HTTP_404_NOT_FOUND)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     # 19 - GET /projects/{id}/issues/{id}/comments/{id}/
@@ -72,8 +84,11 @@ class CommentsViewset(ModelViewSet):
         try:
             comment = Comment.objects.get(id=kwargs["comment_id"])
         except ValidationError:
-            return Response({"errors": "Invalid UUID"}, status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": f"{kwargs['comment_id']} is an invalid comment UUID"},
+                status.HTTP_400_BAD_REQUEST,
+            )
         except Comment.DoesNotExist:
-            return Response({"errors": "Not Found"}, status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "comment not found"}, status.HTTP_404_NOT_FOUND)
         serializer = CommentSerializer(comment)
         return Response(serializer.data, status.HTTP_200_OK)
