@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import UniqueConstraint
 
 from .custom_user import CustomUser
 from .project import Project
@@ -34,7 +35,4 @@ class Contributor(models.Model):
     role = models.CharField(max_length=64, choices=Role.choices, default=Role.CONTRIB)
 
     class Meta:
-        unique_together = (
-            "user",
-            "project",
-        )
+        constraints = [UniqueConstraint("user", "project", name="Unique contributor")]
