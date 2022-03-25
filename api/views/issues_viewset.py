@@ -4,6 +4,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from api.models import CustomUser, Issue, Project
 from api.serializers import IssueSerializer
+from rest_framework.permissions import IsAuthenticated
 
 
 class IssuesViewset(ModelViewSet):
@@ -14,6 +15,7 @@ class IssuesViewset(ModelViewSet):
     14 - DELETE /projects/{id}/issues/{id}/
     """
 
+    permission_classes = (IsAuthenticated,)
     serializer_class = IssueSerializer
 
     def get_queryset(self):

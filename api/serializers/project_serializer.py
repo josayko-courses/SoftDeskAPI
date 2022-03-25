@@ -1,19 +1,19 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 
 from api.models import Project
 
 from .contributor_serializer import ContributorDetailSerializer
 
 
-class ProjectListSerializer(ModelSerializer):
+class ProjectListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ["id", "title", "description", "type"]
+        fields = ["id", "title", "description", "type", "author"]
 
 
-class ProjectDetailSerializer(ModelSerializer):
+class ProjectDetailSerializer(serializers.ModelSerializer):
     users = ContributorDetailSerializer(many=True)
 
     class Meta:
         model = Project
-        fields = ["id", "title", "description", "type", "users"]
+        fields = ("id", "title", "description", "type", "author", "users")

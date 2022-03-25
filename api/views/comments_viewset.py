@@ -4,6 +4,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from api.models import Comment, CustomUser, Issue
 from api.serializers import CommentSerializer
+from rest_framework.permissions import IsAuthenticated
 
 
 class CommentsViewset(ModelViewSet):
@@ -15,6 +16,7 @@ class CommentsViewset(ModelViewSet):
     # 19 - GET /projects/{id}/issues/{id}/comments/{id}/
     """
 
+    permission_classes = (IsAuthenticated,)
     serializer_class = CommentSerializer
 
     def get_queryset(self):

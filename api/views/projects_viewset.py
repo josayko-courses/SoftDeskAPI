@@ -1,4 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
 
 from api.models import Project
 from api.serializers import ProjectDetailSerializer, ProjectListSerializer
@@ -13,6 +14,7 @@ class ProjectsViewset(ModelViewSet):
     7 - DELETE /projects/{id}/
     """
 
+    permission_classes = (IsAuthenticated,)
     serializer_class = ProjectListSerializer
     detail_serializer_class = ProjectDetailSerializer
 
