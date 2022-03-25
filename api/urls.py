@@ -2,9 +2,20 @@ from django.urls import path
 
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from api.views import CommentsViewset, ContributorsViewset, IssuesViewset, ProjectsViewset
+from api.views import (
+    CommentsViewset,
+    ContributorsViewset,
+    IssuesViewset,
+    ProjectsViewset,
+    UsersViewset,
+)
 
 urlpatterns = [
+    # 1 - POST /signup/
+    path(
+        "signup/",
+        UsersViewset.as_view({"post": "create"}),
+    ),
     # 3 - GET /projects/
     # 4 - POST /projects/
     path(

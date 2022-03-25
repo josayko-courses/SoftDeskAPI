@@ -3,7 +3,7 @@ from rest_framework.serializers import ValidationError
 
 from api.models import Contributor
 
-from .user_serializer import UserDetailSerializer
+from .user_serializer import UserListSerializer
 
 
 class ContributorListSerializer(ModelSerializer):
@@ -27,7 +27,7 @@ class ContributorDetailSerializer(ModelSerializer):
             raise ValidationError("This contributor already exists")
         return super().validate(data)
 
-    user = UserDetailSerializer()
+    user = UserListSerializer()
 
     class Meta:
         model = Contributor
