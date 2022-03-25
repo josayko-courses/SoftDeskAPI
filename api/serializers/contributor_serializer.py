@@ -1,17 +1,16 @@
-from rest_framework.serializers import ModelSerializer
-from rest_framework.serializers import ValidationError
+from rest_framework import serializers
 
 from api.models import Contributor
 
 from .user_serializer import UserListSerializer
 
 
-class ContributorListSerializer(ModelSerializer):
+class ContributorListSerializer(serializers.ModelSerializer):
     def validate(self, data):
         user = data.get("user")
         project = data.get("project")
         if Contributor.objects.filter(user=user, project=project).exists():
-            raise ValidationError("This contributor already exists")
+            raise serializers.ValidationError("This contributor already exists")
         return super().validate(data)
 
     class Meta:
@@ -19,12 +18,12 @@ class ContributorListSerializer(ModelSerializer):
         fields = ["user", "project", "role"]
 
 
-class ContributorDetailSerializer(ModelSerializer):
+class ContributorDetailSerializer(serializers.ModelSerializer):
     def validate(self, data):
         user = data.get("user")
         project = data.get("project")
         if Contributor.objects.filter(user=user, project=project).exists():
-            raise ValidationError("This contributor already exists")
+            raise serializers.ValidationError("This contributor already exists")
         return super().validate(data)
 
     user = UserListSerializer()

@@ -4,11 +4,11 @@ from rest_framework import status
 
 from api.models import CustomUser
 from api.serializers import UserListSerializer, UserCreateSerializer
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 class UsersViewset(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
     serializer_class = UserListSerializer
     detail_serializer_class = UserCreateSerializer
 

@@ -12,6 +12,7 @@ from api.views import (
 )
 
 urlpatterns = [
+    path("api-auth/", include("rest_framework.urls")),
     # 1 - POST /signup/
     path(
         "signup/",
@@ -29,7 +30,7 @@ urlpatterns = [
     # 6 - PUT /projects/{id}/
     # 7 - DELETE /projects/{id}/
     path(
-        "projects/<pk>/",
+        "projects/<project_id>/",
         ProjectsViewset.as_view(
             {"get": "retrieve", "put": "update", "delete": "destroy"}
         ),

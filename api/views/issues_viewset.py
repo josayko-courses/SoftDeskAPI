@@ -5,6 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 from api.models import CustomUser, Issue, Project
 from api.serializers import IssueSerializer
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Q
 
 
 class IssuesViewset(ModelViewSet):
@@ -24,7 +25,11 @@ class IssuesViewset(ModelViewSet):
     # 11 - GET /projects/{id}/issues/
     def list(self, request, *args, **kwargs):
         try:
-            issues = Issue.objects.filter(project=kwargs["project_id"])
+            issues = (
+                Issue.objects.filter(project=kwargs["project_id"])
+                .filter(Q(author=request.user) | Q(project__users__user=request.user))
+                .distinct()
+            )
         except ValueError:
             return Response(
                 {"detail": "Invalid id (not a number)"}, status.HTTP_400_BAD_REQUEST

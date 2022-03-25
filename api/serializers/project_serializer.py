@@ -6,6 +6,8 @@ from .contributor_serializer import ContributorDetailSerializer
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
+    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = Project
         fields = ["id", "title", "description", "type", "author"]
