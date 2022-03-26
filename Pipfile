@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 django = "==4.0.3"
 djangorestframework = "==3.12.4"
+pytz = "*"
 
 [dev-packages]
 black = "*"
@@ -15,4 +16,4 @@ pynvim = "*"
 django-stubs = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.8"
