@@ -8,7 +8,7 @@ A simple API for issue tracking system applications.
 
 ### Prerequisites
 
-- `python` >= 3.8, `pip`, `pipenv`
+- `python` >= 3.9, `pip`, `pipenv`
 
 ### Get started
 
