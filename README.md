@@ -16,6 +16,10 @@ A simple API for issue tracking system applications.
 pipenv install
 ```
 
+```bash
+pipenv shell
+```
+
 ## Running the app
 
 ```bash
