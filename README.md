@@ -9,6 +9,7 @@ A simple API for issue tracking system applications.
 ### Prerequisites
 
 - `python` >= 3.9, `pip`, `pipenv`
+- If `python` < 3.9, manage different `python` versions with **[pyenv](https://github.com/pyenv/pyenv)**
 
 ### Get started
 
