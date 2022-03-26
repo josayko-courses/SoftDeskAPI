@@ -8,18 +8,7 @@ A simple API for issue tracking system applications.
 
 ### Prerequisites
 
-- `python` >= 3.6, `pipenv`
-
-Create a virtual environment with `pipenv`:
-
-```bash
-# install pipenv with pip
-pip install pipenv
-```
-
-```bash
-pipenv shell
-```
+- `python` >= 3.8, `pip`, `pipenv`
 
 ### Get started
 
