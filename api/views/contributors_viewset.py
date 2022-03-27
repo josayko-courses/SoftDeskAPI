@@ -5,6 +5,8 @@ from rest_framework.viewsets import ModelViewSet
 from api.models import Contributor, CustomUser, Project
 from api.serializers import ContributorListSerializer
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Q
+from api.permissions import HasContributorPermission
 
 
 class ContributorsViewset(ModelViewSet):
@@ -14,7 +16,7 @@ class ContributorsViewset(ModelViewSet):
     10 - DELETE /projects/{id}/users/{id}/
     """
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, HasContributorPermission)
     serializer_class = ContributorListSerializer
 
     def get_queryset(self):
