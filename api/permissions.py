@@ -26,6 +26,7 @@ class HasContributorPermission(permissions.BasePermission):
         if project in Project.objects.filter(users__user=request.user):
             if request.method in permissions.SAFE_METHODS:
                 return True
-        else:
-            return request.user == project.author
+        # allow GET, HEAD, OPTIONS, POST, DELETE if author
+        if request.user == project.author:
+            return True
         return False
