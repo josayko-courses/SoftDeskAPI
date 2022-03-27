@@ -1,12 +1,11 @@
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from api.models import Contributor, CustomUser, Project
-from api.serializers import ContributorListSerializer
-from rest_framework.permissions import IsAuthenticated
-from django.db.models import Q
 from api.permissions import HasContributorPermission
+from api.serializers import ContributorListSerializer
 
 
 class ContributorsViewset(ModelViewSet):

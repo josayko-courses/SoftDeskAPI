@@ -1,10 +1,11 @@
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from api.models import Comment, CustomUser, Issue
+from api.models import Comment, Issue
+from api.permissions import HasCommentPermission
 from api.serializers import CommentSerializer
-from rest_framework.permissions import IsAuthenticated
 
 
 class CommentsViewset(ModelViewSet):
@@ -16,7 +17,7 @@ class CommentsViewset(ModelViewSet):
     # 19 - GET /projects/{id}/issues/{id}/comments/{id}/
     """
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, HasCommentPermission)
     serializer_class = CommentSerializer
 
     def get_queryset(self):
@@ -25,9 +26,9 @@ class CommentsViewset(ModelViewSet):
     # 16 - GET /projects/{id}/issues/{id}/comments/
     def list(self, request, *args, **kwargs):
         try:
-            comments = Comment.objects.filter(issue=kwargs["issue_id"]).filter(
+            comments = Comment.objects.filter(
                 issue__project__id=kwargs["project_id"]
-            )
+            ).filter(issue=kwargs["issue_id"])
         except ValueError:
             return Response(
                 {"detail": "Invalid id (not a number)"}, status.HTTP_400_BAD_REQUEST
@@ -51,8 +52,7 @@ class CommentsViewset(ModelViewSet):
             )
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
-            author = CustomUser.objects.get(id=request.data["author"])
-            serializer.save(issue=issue, author=author)
+            serializer.save(issue=issue, author=request.user)
             return Response(serializer.data, status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
@@ -61,8 +61,8 @@ class CommentsViewset(ModelViewSet):
     def update(self, request, *args, **kwargs):
         try:
             comment = (
-                Comment.objects.filter(issue=kwargs["issue_id"])
-                .filter(issue__project__id=kwargs["project_id"])
+                Comment.objects.filter(issue__project__id=kwargs["project_id"])
+                .filter(issue=kwargs["issue_id"])
                 .get(id=kwargs["comment_id"])
             )
         except Comment.DoesNotExist:
@@ -85,8 +85,8 @@ class CommentsViewset(ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         try:
             comment = (
-                Comment.objects.filter(issue=kwargs["issue_id"])
-                .filter(issue__project__id=kwargs["project_id"])
+                Comment.objects.filter(issue__project__id=kwargs["project_id"])
+                .filter(issue=kwargs["issue_id"])
                 .get(id=kwargs["comment_id"])
             )
         except Comment.DoesNotExist:
@@ -105,8 +105,8 @@ class CommentsViewset(ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         try:
             comment = (
-                Comment.objects.filter(issue=kwargs["issue_id"])
-                .filter(issue__project__id=kwargs["project_id"])
+                Comment.objects.filter(issue__project__id=kwargs["project_id"])
+                .filter(issue=kwargs["issue_id"])
                 .get(id=kwargs["comment_id"])
             )
         except Comment.DoesNotExist:

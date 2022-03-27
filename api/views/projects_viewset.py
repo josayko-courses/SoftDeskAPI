@@ -1,12 +1,13 @@
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
 from django.db.models import Q
 
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+
 from api.models import Project
+from api.permissions import HasProjectPermission
 from api.serializers import ProjectDetailSerializer, ProjectListSerializer
-from api.permissions import IsOwnerOrReadOnly
 
 
 class ProjectsViewset(ModelViewSet):
@@ -18,7 +19,7 @@ class ProjectsViewset(ModelViewSet):
     7 - DELETE /projects/{id}/
     """
 
-    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+    permission_classes = (IsAuthenticated, HasProjectPermission)
     serializer_class = ProjectListSerializer
     detail_serializer_class = ProjectDetailSerializer
 

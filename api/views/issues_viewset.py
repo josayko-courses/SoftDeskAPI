@@ -1,11 +1,11 @@
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from api.models import CustomUser, Issue, Project
+from api.models import Issue, Project
+from api.permissions import HasIssuePermission
 from api.serializers import IssueSerializer
-from rest_framework.permissions import IsAuthenticated
-from django.db.models import Q
 
 
 class IssuesViewset(ModelViewSet):
@@ -16,7 +16,7 @@ class IssuesViewset(ModelViewSet):
     14 - DELETE /projects/{id}/issues/{id}/
     """
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, HasIssuePermission)
     serializer_class = IssueSerializer
 
     def get_queryset(self):
@@ -25,11 +25,7 @@ class IssuesViewset(ModelViewSet):
     # 11 - GET /projects/{id}/issues/
     def list(self, request, *args, **kwargs):
         try:
-            issues = (
-                Issue.objects.filter(project=kwargs["project_id"])
-                .filter(Q(author=request.user) | Q(project__users__user=request.user))
-                .distinct()
-            )
+            issues = Issue.objects.filter(project=kwargs["project_id"])
         except ValueError:
             return Response(
                 {"detail": "Invalid id (not a number)"}, status.HTTP_400_BAD_REQUEST
@@ -51,8 +47,7 @@ class IssuesViewset(ModelViewSet):
             )
         serializer = IssueSerializer(data=request.data)
         if serializer.is_valid():
-            author = CustomUser.objects.get(id=request.data["author"])
-            serializer.save(project=project, author=author)
+            serializer.save(project=project, author=request.user)
             return Response(serializer.data, status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)

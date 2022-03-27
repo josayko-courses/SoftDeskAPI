@@ -1,16 +1,10 @@
-from django.urls import path, include
-
-from rest_framework.urlpatterns import format_suffix_patterns
-from rest_framework.authtoken.views import obtain_auth_token
+from django.urls import include, path
 from django.views.generic import RedirectView
 
-from api.views import (
-    CommentsViewset,
-    ContributorsViewset,
-    IssuesViewset,
-    ProjectsViewset,
-    UsersViewset,
-)
+from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework.urlpatterns import format_suffix_patterns
+
+from api.views import CommentsViewset, ContributorsViewset, IssuesViewset, ProjectsViewset, UsersViewset
 
 urlpatterns = [
     path("", RedirectView.as_view(url="projects", permanent=True)),
