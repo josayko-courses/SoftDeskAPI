@@ -6,6 +6,7 @@ from django.db.models import Q
 
 from api.models import Project
 from api.serializers import ProjectDetailSerializer, ProjectListSerializer
+from api.permissions import IsOwnerOrReadOnly
 
 
 class ProjectsViewset(ModelViewSet):
@@ -17,7 +18,7 @@ class ProjectsViewset(ModelViewSet):
     7 - DELETE /projects/{id}/
     """
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
     serializer_class = ProjectListSerializer
     detail_serializer_class = ProjectDetailSerializer
 

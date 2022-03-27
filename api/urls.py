@@ -2,6 +2,7 @@ from django.urls import path, include
 
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework.authtoken.views import obtain_auth_token
+from django.views.generic import RedirectView
 
 from api.views import (
     CommentsViewset,
@@ -12,6 +13,7 @@ from api.views import (
 )
 
 urlpatterns = [
+    path("", RedirectView.as_view(url="projects", permanent=True)),
     path("api-auth/", include("rest_framework.urls")),
     # 1 - POST /signup/
     path(
