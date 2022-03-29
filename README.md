@@ -14,18 +14,24 @@ A simple API for issue tracking system applications.
 ### Get started
 
 ```bash
-pipenv install
+$ pipenv install
 ```
 
 ```bash
-pipenv shell
+$ pipenv shell
 ```
 
 ## Running the app
 
 ```bash
-python manage.py runserver
+$ python manage.py runserver
+# The API is running on http://localhost:8000/ by default
 ```
+
+- There are already 3 registered users in the app:
+  - id: `1`, user: `admin@admin.org`, password: `admin` (superuser),
+  - id: `2`, user: `johndoe@softdesk.org`, password: `testuser`,
+  - id: `3`, user: `janesmith@softdesk.org`, password: `testuser`,
 
 ## Author
 
