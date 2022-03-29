@@ -32,7 +32,7 @@ urlpatterns = [
     # 6 - PUT /projects/{id}/
     # 7 - DELETE /projects/{id}/
     path(
-        "projects/<project_id>/",
+        "projects/<pk>/",
         ProjectsViewset.as_view(
             {"get": "retrieve", "put": "update", "delete": "destroy"}
         ),

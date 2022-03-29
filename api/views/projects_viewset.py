@@ -45,7 +45,7 @@ class ProjectsViewset(ModelViewSet):
                     Q(author=request.user) | Q(users__user=request.user)
                 )
                 .distinct()
-                .get(users__project=kwargs["project_id"])
+                .get(id=kwargs["pk"])
             )
         except Project.DoesNotExist:
             return Response(
