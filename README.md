@@ -33,6 +33,10 @@ $ python manage.py runserver
   - id: `2`, user: `johndoe@softdesk.org`, password: `testuser`,
   - id: `3`, user: `janesmith@softdesk.org`, password: `testuser`,
 
+## Documentation
+
+API Postman Documentation: https://documenter.getpostman.com/view/19947149/UVypzcko
+
 ## Author
 
 - Jonny Saykosy <josayko@pm.me>
