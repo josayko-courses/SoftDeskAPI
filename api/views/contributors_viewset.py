@@ -44,14 +44,22 @@ class ContributorsViewset(ModelViewSet):
             return Response(
                 {"detail": "Invalid id (not a number)"}, status.HTTP_400_BAD_REQUEST
             )
-        data = {
-            "user": request.data["user"],
-            "project": kwargs["project_id"],
-            "role": request.data["role"],
-        }
+        try:
+            data = {
+                "user": request.data["user"],
+                "project": kwargs["project_id"],
+                "role": request.data["role"],
+                "permission": request.data["permission"],
+            }
+        except KeyError:
+            return Response(
+                {"detail": "user, permission and role are required"},
+                status.HTTP_400_BAD_REQUEST,
+            )
+
         serializer = ContributorListSerializer(data=data)
         if serializer.is_valid():
-            user = CustomUser.objects.get(id=data["user"])
+            user = CustomUser.objects.get(id=request.data["user"])
             serializer.save(project=project, user=user)
             return Response(serializer.data, status.HTTP_201_CREATED)
         else:
